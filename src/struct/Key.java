@@ -17,6 +17,18 @@ public class Key {
 	 */
 	public boolean C;
 	/**
+	 * If the value is set to true, then the "X" button will be pressed.
+	 */
+	public boolean X;
+	/**
+	 * If the value is set to true, then the "Y" button will be pressed.
+	 */
+	public boolean Y;
+	/**
+	 * If the value is set to true, then the "Z" button will be pressed.
+	 */
+	public boolean Z;
+	/**
 	 * If the value is set to true, then the "Up" button will be pressed.
 	 */
 	public boolean U;
@@ -51,6 +63,9 @@ public class Key {
 			this.A = key.A;
 			this.B = key.B;
 			this.C = key.C;
+			this.X = key.X;
+			this.Y = key.Y;
+			this.Z = key.Z;
 			this.U = key.U;
 			this.R = key.R;
 			this.D = key.D;
@@ -67,6 +82,9 @@ public class Key {
 		this.A = false;
 		this.B = false;
 		this.C = false;
+		this.X = false;
+		this.Y = false;
+		this.Z = false;
 		this.U = false;
 		this.R = false;
 		this.D = false;

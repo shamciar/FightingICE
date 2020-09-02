@@ -168,21 +168,27 @@ public class InputManager<Data> {
 		Key key = new Key();
 
 		if (playerNumber) {
-			key.A = keyboard.getKeyDown(GLFW_KEY_Z);
-			key.B = keyboard.getKeyDown(GLFW_KEY_X);
-			key.C = keyboard.getKeyDown(GLFW_KEY_C);
-			key.U = keyboard.getKeyDown(GLFW_KEY_UP);
-			key.D = keyboard.getKeyDown(GLFW_KEY_DOWN);
-			key.R = keyboard.getKeyDown(GLFW_KEY_RIGHT);
-			key.L = keyboard.getKeyDown(GLFW_KEY_LEFT);
+			key.A = Keyboard.getKeyDown(GLFW_KEY_U);
+			key.B = Keyboard.getKeyDown(GLFW_KEY_I);
+			key.C = Keyboard.getKeyDown(GLFW_KEY_O);
+			key.X = Keyboard.getKeyDown(GLFW_KEY_J);
+			key.Y = Keyboard.getKeyDown(GLFW_KEY_K);
+			key.Z = Keyboard.getKeyDown(GLFW_KEY_L);
+			key.U = Keyboard.getKeyDown(GLFW_KEY_W);
+			key.D = Keyboard.getKeyDown(GLFW_KEY_S);
+			key.R = Keyboard.getKeyDown(GLFW_KEY_D);
+			key.L = Keyboard.getKeyDown(GLFW_KEY_A);
 		} else {
-			key.A = keyboard.getKeyDown(GLFW_KEY_T);
-			key.B = keyboard.getKeyDown(GLFW_KEY_Y);
-			key.C = keyboard.getKeyDown(GLFW_KEY_U);
-			key.U = keyboard.getKeyDown(GLFW_KEY_I);
-			key.D = keyboard.getKeyDown(GLFW_KEY_K);
-			key.R = keyboard.getKeyDown(GLFW_KEY_L);
-			key.L = keyboard.getKeyDown(GLFW_KEY_J);
+			key.A = Keyboard.getKeyDown(GLFW_KEY_Z);
+			key.B = Keyboard.getKeyDown(GLFW_KEY_X);
+			key.C = Keyboard.getKeyDown(GLFW_KEY_C);
+			key.X = Keyboard.getKeyDown(GLFW_KEY_V);
+			key.Y = Keyboard.getKeyDown(GLFW_KEY_B);
+			key.Z = Keyboard.getKeyDown(GLFW_KEY_N);
+			key.U = Keyboard.getKeyDown(GLFW_KEY_UP);
+			key.D = Keyboard.getKeyDown(GLFW_KEY_DOWN);
+			key.R = Keyboard.getKeyDown(GLFW_KEY_RIGHT);
+			key.L = Keyboard.getKeyDown(GLFW_KEY_LEFT);
 		}
 
 		return key;

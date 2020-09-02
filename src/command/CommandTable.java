@@ -39,6 +39,9 @@ public class CommandTable {
 		boolean pushA = false;
 		boolean pushB = false;
 		boolean pushC = false;
+		boolean pushX = false;
+		boolean pushY = false;
+		boolean pushZ = false;
 		int charIndex = character.isPlayerNumber() ? 0 : 1;
 
 		KeyData temp;
@@ -53,10 +56,16 @@ public class CommandTable {
 			pushA = nowKeyData.A && !input.getLast().getKeys()[charIndex].A;
 			pushB = nowKeyData.B && !input.getLast().getKeys()[charIndex].B;
 			pushC = nowKeyData.C && !input.getLast().getKeys()[charIndex].C;
+			pushX = nowKeyData.X && !input.getLast().getKeys()[charIndex].X;
+			pushY = nowKeyData.Y && !input.getLast().getKeys()[charIndex].Y;
+			pushZ = nowKeyData.Z && !input.getLast().getKeys()[charIndex].Z;
 		} else {
 			pushA = nowKeyData.A;
 			pushB = nowKeyData.B;
 			pushC = nowKeyData.C;
+			pushX = nowKeyData.X;
+			pushY = nowKeyData.Y;
+			pushZ = nowKeyData.Z;
 		}
 
 		input.addLast(temp);
@@ -75,12 +84,12 @@ public class CommandTable {
 			}
 		}
 
-		return convertKeyToAction(pushA, pushB, pushC, nowKeyData, commandList, character.getState(),
+		return convertKeyToAction(pushA, pushB, pushC, pushX, pushY, pushZ, nowKeyData, commandList, character.getState(),
 				character.isFront());
 	}
 
 	/**
-	 * P1またはP2のキー入力データを対応するアクションに変換する処理を行い，そのアクションを返す．<br>
+	 * P1またはP2のキー入力データを対応するアクションに変換する処理を行い，そのアクションを返す．
 	 * このメソッドはシミュレータ内でのみ呼び出される.
 	 *
 	 * @param character
@@ -96,6 +105,9 @@ public class CommandTable {
 		boolean pushA = false;
 		boolean pushB = false;
 		boolean pushC = false;
+		boolean pushX = false;
+		boolean pushY = false;
+		boolean pushZ = false;
 
 		// get current key state
 		Key nowKey = new Key(input.removeLast());
@@ -106,10 +118,16 @@ public class CommandTable {
 			pushA = nowKey.A && !input.getLast().A;
 			pushB = nowKey.B && !input.getLast().B;
 			pushC = nowKey.C && !input.getLast().C;
+			pushX = nowKey.X && !input.getLast().X;
+			pushY = nowKey.Y && !input.getLast().Y;
+			pushZ = nowKey.Z && !input.getLast().Z;
 		} else {
 			pushA = nowKey.A;
 			pushB = nowKey.B;
 			pushC = nowKey.C;
+			pushX = nowKey.X;
+			pushY = nowKey.Y;
+			pushZ = nowKey.Z;
 		}
 
 		input.addLast(nowKey);
@@ -127,11 +145,11 @@ public class CommandTable {
 			}
 		}
 
-		return convertKeyToAction(pushA, pushB, pushC, nowKey, commandList, character.getState(), character.isFront());
+		return convertKeyToAction(pushA, pushB, pushC, pushX, pushY, pushZ, nowKey, commandList, character.getState(), character.isFront());
 	}
 
 	/**
-	 * 引数として渡されたキー入力情報とキャラクター情報を基に, それに対応するアクションを返す.<br>
+	 * 引数として渡されたキー入力情報とキャラクター情報を基に, それに対応するアクションを返す.
 	 *
 	 * @param pushA
 	 *            最新のキー入力でAキー(P1: Z, P2: T)が押されているかどうか
@@ -154,15 +172,23 @@ public class CommandTable {
 	 * @see State
 	 * @see Action
 	 */
-	private Action convertKeyToAction(boolean pushA, boolean pushB, boolean pushC, Key nowKeyData, int[] commandList,
+	private Action convertKeyToAction(boolean pushA, boolean pushB, boolean pushC,
+			boolean pushX, boolean pushY, boolean pushZ, Key nowKeyData, int[] commandList,
 			State state, boolean isFront) {
 		// 789
 		// 456
 		// 123
+		// ABC
+		// XYZ
 
 		// AIR Action
 		if (state == State.AIR) {
-			if (pushB) {
+			if (pushC) {
+				//No air special moves for C
+				//Change the action here to the Air Up A
+				return Action.AIR_UA;
+				
+			} else if (pushB) {
 				// special move
 				if ((commandList[0] == 6 && commandList[1] == 3 && commandList[2] == 2)) {
 					return Action.AIR_D_DF_FB;// AIR236B
@@ -174,17 +200,17 @@ public class CommandTable {
 				} else if (commandList[0] == 4 && commandList[1] == 1 && commandList[2] == 2) {
 					return Action.AIR_D_DB_BB;// AIR214B
 
-				} else if (nowKeyData.getLever(isFront) == 2) {
-					return Action.AIR_DB;// AIR2B
-
-				} else if (nowKeyData.getLever(isFront) == 8) {
-					return Action.AIR_UB;// AIR8B
-
-				} else if (nowKeyData.getLever(isFront) == 6) {
-					return Action.AIR_FB;// AIR6B
+//				} else if (nowKeyData.getLever(isFront) == 2) {
+//					return Action.AIR_DB;// AIR2B
+//
+//				} else if (nowKeyData.getLever(isFront) == 8) {
+//					return Action.AIR_UB;// AIR8B
+//
+//				} else if (nowKeyData.getLever(isFront) == 6) {
+//					return Action.AIR_FB;// AIR6B
 
 				} else {
-					return Action.AIR_B;// AIR5B
+					return Action.AIR_DA;// Change to AIR2A
 				}
 
 			} else if (pushA) {
@@ -199,17 +225,59 @@ public class CommandTable {
 				} else if (commandList[0] == 4 && commandList[1] == 1 && commandList[2] == 2) {
 					return Action.AIR_D_DB_BA;// AIR214A
 
-				} else if (nowKeyData.getLever(isFront) == 2) {
-					return Action.AIR_DA;// AIR2A
-
-				} else if (nowKeyData.getLever(isFront) == 8) {
-					return Action.AIR_UA;// AIR8A
-
-				} else if (nowKeyData.getLever(isFront) == 6) {
-					return Action.AIR_FA;// AIR6A
+//				} else if (nowKeyData.getLever(isFront) == 2) {
+//					return Action.AIR_DA;// AIR2A
+//
+//				} else if (nowKeyData.getLever(isFront) == 8) {
+//					return Action.AIR_UA;// AIR8A
+//
+//				} else if (nowKeyData.getLever(isFront) == 6) {
+//					return Action.AIR_FA;// AIR6A
 
 				} else {
 					return Action.AIR_A;// AIR5A
+				}
+			
+			} else if (pushZ) {
+				
+				//No air special moves for Z
+				//Change the action here to the Air Up B
+				return Action.AIR_UB;
+				
+			} else if (pushY) {
+				
+				// special move
+				// treat as the same as B special moves
+				if ((commandList[0] == 6 && commandList[1] == 3 && commandList[2] == 2)) {
+					return Action.AIR_D_DF_FB;// AIR236B
+
+				} else if ((commandList[0] == 3 && commandList[1] == 2 && commandList[2] == 6)
+						|| (commandList[0] == 3 && commandList[1] == 2 && commandList[2] == 3 && commandList[3] == 6)) {
+					return Action.AIR_F_D_DFB;// AIR623B
+
+				} else if (commandList[0] == 4 && commandList[1] == 1 && commandList[2] == 2) {
+					return Action.AIR_D_DB_BB;// AIR214B
+					
+				} else {
+					return Action.AIR_DB; //Change to AIR2B
+				}
+				
+			} else if (pushX) {
+				
+				// special move
+				// treat as the same as A special moves
+				if ((commandList[0] == 6 && commandList[1] == 3 && commandList[2] == 2)) {
+					return Action.AIR_D_DF_FA;// AIR236A
+
+				} else if ((commandList[0] == 3 && commandList[1] == 2 && commandList[2] == 6)
+						|| (commandList[0] == 3 && commandList[1] == 2 && commandList[2] == 3 && commandList[3] == 6)) {
+					return Action.AIR_F_D_DFA;// AIR623A
+
+				} else if (commandList[0] == 4 && commandList[1] == 1 && commandList[2] == 2) {
+					return Action.AIR_D_DB_BA;// AIR214A
+				
+				} else {
+					return Action.AIR_B; //Change to AIRB
 				}
 
 			} else if (nowKeyData.getLever(isFront) == 4) {
@@ -225,6 +293,8 @@ public class CommandTable {
 			if (pushC) {
 				if ((commandList[0] == 6 && commandList[1] == 3 && commandList[2] == 2)) {
 					return Action.STAND_D_DF_FC;// STAND236A
+				} else {
+					return Action.THROW_A; //Change to standing throw
 				}
 
 			} else if (pushB) {
@@ -240,20 +310,20 @@ public class CommandTable {
 					return Action.STAND_D_DB_BB;// STAND214B
 
 					// normal move
-				} else if (nowKeyData.getLever(isFront) == 3) {
-					return Action.CROUCH_FB;// STAND3B
+//				} else if (nowKeyData.getLever(isFront) == 3) {
+//					return Action.CROUCH_FB;// STAND3B
 
 				} else if (nowKeyData.getLever(isFront) == 2) {
-					return Action.CROUCH_B;// STAND2B
+					return Action.CROUCH_FA;// Change to 3A
 
-				} else if (nowKeyData.getLever(isFront) == 4) {
-					return Action.THROW_B;// STAND4B
-
-				} else if (nowKeyData.getLever(isFront) == 6) {
-					return Action.STAND_FB;// STAND6B
+//				} else if (nowKeyData.getLever(isFront) == 4) {
+//					return Action.THROW_B;// STAND4B
+//
+//				} else if (nowKeyData.getLever(isFront) == 6) {
+//					return Action.STAND_FB;// STAND6B
 
 				} else {
-					return Action.STAND_B;// STAND5B
+					return Action.STAND_FA;// STAND6A
 				}
 
 			} else if (pushA) {
@@ -269,21 +339,90 @@ public class CommandTable {
 					return Action.STAND_D_DB_BA;// STAND214A
 
 					// normal move
-				} else if (nowKeyData.getLever(isFront) == 3) {
-					return Action.CROUCH_FA;// CROUCH3A
+//				} else if (nowKeyData.getLever(isFront) == 3) {
+//					return Action.CROUCH_FA;// CROUCH3A
 
 				} else if (nowKeyData.getLever(isFront) == 2) {
 					return Action.CROUCH_A;// CROUCH2A
 
-				} else if (nowKeyData.getLever(isFront) == 4) {
-					return Action.THROW_A;// THROW4A
-
-				} else if (nowKeyData.getLever(isFront) == 6) {
-					return Action.STAND_FA;// STAND6A
+//				} else if (nowKeyData.getLever(isFront) == 4) {
+//					return Action.THROW_A;// THROW4A
+//
+//				} else if (nowKeyData.getLever(isFront) == 6) {
+//					return Action.STAND_FA;// STAND6A
 
 				} else {
 					return Action.STAND_A;// STAND5A
 				}
+				
+			} else if (pushZ) {
+				//Super special move
+				if ((commandList[0] == 6 && commandList[1] == 3 && commandList[2] == 2)) {
+					return Action.STAND_D_DF_FC;// STAND236A
+				} else {
+					return Action.THROW_B; //Change to standing throw
+				}
+
+			} else if (pushY) {
+				// special move
+				// treat as the same as B special moves
+				if ((commandList[0] == 6 && commandList[1] == 3 && commandList[2] == 2)) {
+					return Action.STAND_D_DF_FB;// STAND236B
+
+				} else if ((commandList[0] == 3 && commandList[1] == 2 && commandList[2] == 6)
+						|| (commandList[0] == 3 && commandList[1] == 2 && commandList[2] == 3 && commandList[3] == 6)) {
+					return Action.STAND_F_D_DFB;// STAND623B
+
+				} else if (commandList[0] == 4 && commandList[1] == 1 && commandList[2] == 2) {
+					return Action.STAND_D_DB_BB;// STAND214B
+
+					// normal move
+//				} else if (nowKeyData.getLever(isFront) == 3) {
+//					return Action.CROUCH_FB;// STAND3B
+
+				} else if (nowKeyData.getLever(isFront) == 2) {
+					return Action.CROUCH_FB;// Change to 3B
+
+//				} else if (nowKeyData.getLever(isFront) == 4) {
+//					return Action.THROW_B;// STAND4B
+//
+//				} else if (nowKeyData.getLever(isFront) == 6) {
+//					return Action.STAND_FB;// STAND6B
+
+				} else {
+					return Action.STAND_FB;// Change to 6B
+				}
+
+			} else if (pushX) {
+				// special move
+				// Treat as the same as A special moves
+				if ((commandList[0] == 6 && commandList[1] == 3 && commandList[2] == 2)) {
+					return Action.STAND_D_DF_FA;// STAND236A
+
+				} else if ((commandList[0] == 3 && commandList[1] == 2 && commandList[2] == 6)
+						|| (commandList[0] == 3 && commandList[1] == 2 && commandList[2] == 3 && commandList[3] == 6)) {
+					return Action.STAND_F_D_DFA;// STAND623A
+
+				} else if (commandList[0] == 4 && commandList[1] == 1 && commandList[2] == 2) {
+					return Action.STAND_D_DB_BA;// STAND214A
+
+					// normal move
+//				} else if (nowKeyData.getLever(isFront) == 3) {
+//					return Action.CROUCH_FA;// CROUCH3A
+
+				} else if (nowKeyData.getLever(isFront) == 2) {
+					return Action.CROUCH_B;// Change to 2B
+
+//				} else if (nowKeyData.getLever(isFront) == 4) {
+//					return Action.THROW_A;// THROW4A
+//
+//				} else if (nowKeyData.getLever(isFront) == 6) {
+//					return Action.STAND_FA;// STAND6A
+
+				} else {
+					return Action.STAND_B;// Change to 5B
+				}
+				
 
 			} else if (nowKeyData.getLever(isFront) == 6) {
 				if (commandList[1] == 6) {
@@ -324,6 +463,5 @@ public class CommandTable {
 
 			}
 		}
-		return Action.STAND;
 	}
 }
