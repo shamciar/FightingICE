@@ -273,6 +273,7 @@ public class Replay extends GameScene {
 		for (int i = 0; i < 2; i++) {
 			temp[i] = new Key();
 			byte keyByte = 0;
+			byte moveByte = 0;
 
 			try {
 				this.dis.readBoolean(); // front
@@ -282,7 +283,8 @@ public class Replay extends GameScene {
 				this.dis.readInt(); // energy
 				this.dis.readInt(); // x
 				this.dis.readInt(); // y
-				keyByte = this.dis.readByte();
+				keyByte = this.dis.readByte(); //button input
+				moveByte = this.dis.readByte(); //movement input
 			} catch (EOFException e) {
 				Logger.getAnonymousLogger().log(Level.INFO, "The replay file was finished in the middle");
 				try {
@@ -301,13 +303,11 @@ public class Replay extends GameScene {
 				e1.printStackTrace();
 			}
 
-			temp[i].U = convertItoB(keyByte / 64);
-			keyByte %= 64;
-			temp[i].R = convertItoB(keyByte / 32);
+			temp[i].Z = convertItoB(keyByte / 32);
 			keyByte %= 32;
-			temp[i].L = convertItoB(keyByte / 16);
+			temp[i].Y = convertItoB(keyByte / 16);
 			keyByte %= 16;
-			temp[i].D = convertItoB(keyByte / 8);
+			temp[i].X = convertItoB(keyByte / 8);
 			keyByte %= 8;
 			temp[i].C = convertItoB(keyByte / 4);
 			keyByte %= 4;
@@ -315,6 +315,15 @@ public class Replay extends GameScene {
 			keyByte %= 2;
 			temp[i].A = convertItoB(keyByte / 1);
 			keyByte %= 1;
+			
+			temp[i].U = convertItoB(moveByte / 8);
+			moveByte %= 8;
+			temp[i].R = convertItoB(moveByte / 4);
+			moveByte %= 4;
+			temp[i].L = convertItoB(moveByte / 2);
+			moveByte %= 2;
+			temp[i].D = convertItoB(moveByte / 1);
+			moveByte %= 1;
 		}
 
 		return new KeyData(temp);

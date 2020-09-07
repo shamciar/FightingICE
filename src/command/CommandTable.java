@@ -225,14 +225,14 @@ public class CommandTable {
 				} else if (commandList[0] == 4 && commandList[1] == 1 && commandList[2] == 2) {
 					return Action.AIR_D_DB_BA;// AIR214A
 
-//				} else if (nowKeyData.getLever(isFront) == 2) {
-//					return Action.AIR_DA;// AIR2A
-//
-//				} else if (nowKeyData.getLever(isFront) == 8) {
-//					return Action.AIR_UA;// AIR8A
-//
-//				} else if (nowKeyData.getLever(isFront) == 6) {
-//					return Action.AIR_FA;// AIR6A
+				} else if (nowKeyData.getLever(isFront) == 2) {
+					return Action.AIR_DA;// AIR2A
+
+				} else if (nowKeyData.getLever(isFront) == 8) {
+					return Action.AIR_UA;// AIR8A
+
+				} else if (nowKeyData.getLever(isFront) == 6) {
+					return Action.AIR_FA;// AIR6A
 
 				} else {
 					return Action.AIR_A;// AIR5A
@@ -310,17 +310,17 @@ public class CommandTable {
 					return Action.STAND_D_DB_BB;// STAND214B
 
 					// normal move
-//				} else if (nowKeyData.getLever(isFront) == 3) {
-//					return Action.CROUCH_FB;// STAND3B
+				} else if (nowKeyData.getLever(isFront) == 3) {
+					return Action.CROUCH_FB;// STAND3B
 
 				} else if (nowKeyData.getLever(isFront) == 2) {
 					return Action.CROUCH_FA;// Change to 3A
 
-//				} else if (nowKeyData.getLever(isFront) == 4) {
-//					return Action.THROW_B;// STAND4B
-//
-//				} else if (nowKeyData.getLever(isFront) == 6) {
-//					return Action.STAND_FB;// STAND6B
+				} else if (nowKeyData.getLever(isFront) == 4) {
+					return Action.THROW_B;// STAND4B
+
+				} else if (nowKeyData.getLever(isFront) == 6) {
+					return Action.STAND_FB;// STAND6B
 
 				} else {
 					return Action.STAND_FA;// STAND6A

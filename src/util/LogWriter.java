@@ -144,11 +144,14 @@ public class LogWriter {
 				dos.writeInt(playerCharacters[i].getY());
 
 				byte input = (byte) (convertBtoI(keyData.getKeys()[i].A) + convertBtoI(keyData.getKeys()[i].B) * 2
-						+ convertBtoI(keyData.getKeys()[i].C) * 4 + convertBtoI(keyData.getKeys()[i].D) * 8
-						+ convertBtoI(keyData.getKeys()[i].L) * 16 + convertBtoI(keyData.getKeys()[i].R) * 32
-						+ convertBtoI(keyData.getKeys()[i].U) * 64);
+						+ convertBtoI(keyData.getKeys()[i].C) * 4 + convertBtoI(keyData.getKeys()[i].X) * 8
+						+ convertBtoI(keyData.getKeys()[i].Y) * 16 + convertBtoI(keyData.getKeys()[i].Z) * 32);
+				
+				byte movement = (byte)(convertBtoI(keyData.getKeys()[i].D) + convertBtoI(keyData.getKeys()[i].L) * 2
+						+ convertBtoI(keyData.getKeys()[i].R) * 4 + convertBtoI(keyData.getKeys()[i].U) * 8);
 
 				dos.writeByte(input);
+				dos.writeByte(movement);
 			}
 
 		} catch (IOException e) {
