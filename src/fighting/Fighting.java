@@ -6,7 +6,9 @@ import java.util.LinkedList;
 
 import command.CommandTable;
 import enumerate.Action;
+import enumerate.AttackState;
 import enumerate.State;
+import enumerate.Success;
 import image.Image;
 import input.KeyData;
 import manager.GraphicManager;
@@ -17,6 +19,7 @@ import struct.AttackData;
 import struct.CharacterData;
 import struct.FrameData;
 import struct.Key;
+import util.FeedbackAnalysis;
 
 /**
  * 対戦処理及びそれに伴う攻撃やキャラクターのパラメータの更新処理を扱うクラス．
@@ -144,6 +147,7 @@ public class Fighting {
 						this.inputCommands);
 				if (ableAction(this.playerCharacters[i], executeAction)) {
 					this.playerCharacters[i].runAction(executeAction, true);
+					FeedbackAnalysis.getInstance().addAction(executeAction, i);
 				}
 			}
 		}
@@ -168,6 +172,11 @@ public class Fighting {
 				int myIndex = opponentIndex == 0 ? 1 : 0;
 				this.playerCharacters[opponentIndex].hitAttack(this.playerCharacters[myIndex], projectile.getAttack(),
 						currentFrame);
+				//ADDED FUNCTIONALITY: update analyzer with the attack
+				FeedbackAnalysis.getInstance().addSuccess(Success.PROJECTILE_HIT, myIndex);
+				if(playerCharacters[opponentIndex].getAttackState() == AttackState.RECOVERY) {
+					FeedbackAnalysis.getInstance().addSuccess(Success.PUNISH, myIndex);
+				}
 			} else {
 				this.projectileDeque.addLast(projectile);
 			}
@@ -182,6 +191,32 @@ public class Fighting {
 				isHit[i] = true;
 				// HP等のパラメータの更新
 				this.playerCharacters[opponentIndex].hitAttack(this.playerCharacters[i], attack, currentFrame);
+				//Check if meaty
+				if(attack.getCurrentFrame() > attack.getStartUp() + 1) {
+					FeedbackAnalysis.getInstance().addSuccess(Success.MEATY, i);
+				}
+				//Check Block State
+				if(playerCharacters[opponentIndex].getAttackState() == AttackState.BLOCKSTUN) {
+					FeedbackAnalysis.getInstance().addSuccess(Success.BLOCK, opponentIndex);
+				} else {
+					if(playerCharacters[opponentIndex].getAttackState() == AttackState.RECOVERY) {
+						FeedbackAnalysis.getInstance().addSuccess(Success.PUNISH, i);
+						if(playerCharacters[opponentIndex].getState() == State.AIR) {
+							FeedbackAnalysis.getInstance().addSuccess(Success.ANTI_AIR, i);
+						}
+					}
+				}
+				//Finally, check the hit level of the attack
+				if(attack.getAttackType() == 2) {
+					FeedbackAnalysis.getInstance().addSuccess(Success.HIGH_HIT, i);
+				} else if (attack.getAttackType() == 3) {
+					FeedbackAnalysis.getInstance().addSuccess(Success.LOW_HIT, i);
+				} else if (attack.getAttackType() == 4) {
+					FeedbackAnalysis.getInstance().addSuccess(Success.THROW, i);
+				}
+				
+			} else if(attack.getAttackType() != 0) {
+				FeedbackAnalysis.getInstance().addSuccess(Success.WHIFF, i);
 			}
 		}
 

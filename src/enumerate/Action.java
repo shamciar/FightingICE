@@ -60,4 +60,5 @@ public enum Action {
 	AIR_D_DB_BA,
 	AIR_D_DB_BB,
 	STAND_D_DF_FC,
+	TOTAL
 }

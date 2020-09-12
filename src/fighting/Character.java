@@ -7,6 +7,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 import enumerate.Action;
+import enumerate.AttackState;
 import enumerate.State;
 import image.Image;
 import loader.ResourceLoader;
@@ -65,6 +66,13 @@ public class Character {
 	 * @see State
 	 */
 	private State state;
+	
+	/**
+	 * The character's attack state: NORMAL / STARTUP / RECOVERY / HITSTUN / BLOCKSTUN
+	 * 
+	 * @see AttackState
+	 */
+	private AttackState attackState;
 
 	/**
 	 * The character's action.
@@ -177,6 +185,7 @@ public class Character {
 		this.speedX = 0;
 		this.speedY = 0;
 		this.state = State.STAND;
+		this.attackState = AttackState.NORMAL;
 		this.action = Action.NEUTRAL;
 		this.hitConfirm = false;
 		this.front = true;
@@ -209,6 +218,7 @@ public class Character {
 		this.speedX = character.getSpeedX();
 		this.speedY = character.getSpeedY();
 		this.state = character.getState();
+		this.attackState = character.getAttackState();
 		this.action = character.getAction();
 		this.hitConfirm = character.isHitConfirm();
 		this.front = character.isFront();
@@ -421,6 +431,13 @@ public class Character {
 			} else {
 				runAction(Action.STAND, true);
 			}
+			
+		} else {
+			//If the character had started up an attack, put them in recovery
+			//Otherwise, keep the blockstun / hitstun state the same
+			if(this.getAttackState() == AttackState.STARTUP) {
+				this.setAttackState(AttackState.RECOVERY);
+			}
 		}
 
 		createAttackInstance();
@@ -452,6 +469,7 @@ public class Character {
 		opponent.setLastHitFrame(currentFrame);
 
 		if (isGuard(attack)) {
+			this.setAttackState(AttackState.BLOCKSTUN);
 			setHp(this.hp - attack.getGuardDamage() - opponent.getExtraDamage());
 			setEnergy(this.energy + attack.getGiveEnergy());
 			setSpeedX(direction * attack.getImpactX() / 2); // 通常の半分のノックバック
@@ -462,6 +480,7 @@ public class Character {
 				SoundManager.getInstance().play(SoundManager.getInstance().getSoundEffect().get("WeakGuard.wav"));
 			}
 		} else {
+			this.setAttackState(AttackState.HITSTUN);
 			// 投げ技のときの処理
 			if (attack.getAttackType() == 4) {
 				if (this.state != State.AIR && this.state != State.DOWN) {
@@ -593,6 +612,7 @@ public class Character {
 					motion.isAttackDownProp());
 
 			this.attack.initialize(this.playerNumber, this.x, this.y, this.graphicSizeX, this.front);
+			this.setAttackState(AttackState.STARTUP);
 		}
 	}
 
@@ -783,6 +803,17 @@ public class Character {
 	 */
 	public State getState() {
 		return this.state;
+	}
+	
+	/**
+	 * Returns the character's attack state: NORMAL / STARTUP / RECOVERY / HITSTUN / BLOCKSTUN
+	 *
+	 * @return the character's attack state: NORMAL / STARTUP / RECOVERY / HITSTUN / BLOCKSTUN
+	 *
+	 * @see AttackState
+	 */
+	public AttackState getAttackState() {
+		return this.attackState;
 	}
 
 	/**
@@ -1088,6 +1119,17 @@ public class Character {
 	 */
 	public void setState(State state) {
 		this.state = state;
+	}
+	
+	/**
+	 * Sets the character's attack state.
+	 *
+	 * @param state
+	 *            a given attack state
+	 * @see AttackState
+	 */
+	public void setAttackState(AttackState state) {
+		this.attackState = state;
 	}
 
 	/**

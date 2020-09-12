@@ -1,0 +1,18 @@
+package enumerate;
+
+public enum Success {
+	HIGH_HIT,
+	LOW_HIT,
+	COUNTER_HIT,
+	PUNISH,
+	KNOCKDOWN,
+	SPECIAL_ENDER,
+	ANTI_AIR,
+	MEATY,
+	THROW,
+	BLOCK,
+	WHIFF,
+	REVERSAL,
+	PROJECTILE_HIT,
+	TOTAL
+}
