@@ -215,7 +215,7 @@ public class Fighting {
 					FeedbackAnalysis.getInstance().addSuccess(Success.THROW, i);
 				}
 				
-			} else if(attack.getAttackType() != 0) {
+			} else if(attack != null && attack.getAttackType() != 0) {
 				FeedbackAnalysis.getInstance().addSuccess(Success.WHIFF, i);
 			}
 		}
