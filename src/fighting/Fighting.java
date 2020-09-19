@@ -189,30 +189,39 @@ public class Fighting {
 
 			if (detectionHit(this.playerCharacters[opponentIndex], attack)) {
 				isHit[i] = true;
+				//Check special hit cases
+				//We need to check this before hitstun or blockstun state changes apply
+				if(playerCharacters[opponentIndex].getAttackState() == AttackState.STARTUP) {
+					FeedbackAnalysis.getInstance().addSuccess(Success.COUNTER_HIT, i);
+				}
+				if(playerCharacters[opponentIndex].getAttackState() == AttackState.RECOVERY) {
+					FeedbackAnalysis.getInstance().addSuccess(Success.PUNISH, i);
+				}
+				if(playerCharacters[opponentIndex].getState() == State.AIR) {
+					FeedbackAnalysis.getInstance().addSuccess(Success.ANTI_AIR, i);
+				}
 				// HP等のパラメータの更新
 				this.playerCharacters[opponentIndex].hitAttack(this.playerCharacters[i], attack, currentFrame);
 				//Check if meaty
 				if(attack.getCurrentFrame() > attack.getStartUp() + 1) {
 					FeedbackAnalysis.getInstance().addSuccess(Success.MEATY, i);
 				}
+				//Check if knockdown
+				if(attack.isDownProp()) {
+					FeedbackAnalysis.getInstance().addSuccess(Success.KNOCKDOWN, i);
+				}
 				//Check Block State
 				if(playerCharacters[opponentIndex].getAttackState() == AttackState.BLOCKSTUN) {
 					FeedbackAnalysis.getInstance().addSuccess(Success.BLOCK, opponentIndex);
-				} else {
-					if(playerCharacters[opponentIndex].getAttackState() == AttackState.RECOVERY) {
-						FeedbackAnalysis.getInstance().addSuccess(Success.PUNISH, i);
-						if(playerCharacters[opponentIndex].getState() == State.AIR) {
-							FeedbackAnalysis.getInstance().addSuccess(Success.ANTI_AIR, i);
-						}
-					}
 				}
-				//Finally, check the hit level of the attack
-				if(attack.getAttackType() == 2) {
-					FeedbackAnalysis.getInstance().addSuccess(Success.HIGH_HIT, i);
-				} else if (attack.getAttackType() == 3) {
-					FeedbackAnalysis.getInstance().addSuccess(Success.LOW_HIT, i);
-				} else if (attack.getAttackType() == 4) {
-					FeedbackAnalysis.getInstance().addSuccess(Success.THROW, i);
+				else {
+					if(attack.getAttackType() == 2) {
+						FeedbackAnalysis.getInstance().addSuccess(Success.HIGH_HIT, i);
+					} else if (attack.getAttackType() == 3) {
+						FeedbackAnalysis.getInstance().addSuccess(Success.LOW_HIT, i);
+					} else if (attack.getAttackType() == 4) {
+						FeedbackAnalysis.getInstance().addSuccess(Success.THROW, i);
+					}
 				}
 				
 			} else if(attack != null && attack.getAttackType() != 0) {

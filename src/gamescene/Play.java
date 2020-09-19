@@ -29,6 +29,7 @@ import struct.ScreenData;
 import util.DebugActionData;
 import util.LogWriter;
 import util.ResourceDrawer;
+import util.FeedbackAnalysis;
 
 /**
  * 対戦中のシーンを扱うクラス．
@@ -383,6 +384,11 @@ public class Play extends GameScene {
 		// AIの実行を終了する
 		InputManager.getInstance().closeAI();
 		this.roundResults.clear();
+		
+		FeedbackAnalysis.getInstance().outputActionCount();
+		FeedbackAnalysis.getInstance().outputSuccessCount();
+		FeedbackAnalysis.getInstance().closeAllWriters();
+		
 
 		if (FlagSetting.debugActionFlag) {
 			DebugActionData.getInstance().closeAllWriters();
