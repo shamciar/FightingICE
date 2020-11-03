@@ -435,7 +435,7 @@ public class Character {
 		} else {
 			//If the character had started up an attack, put them in recovery
 			//Otherwise, keep the blockstun / hitstun state the same
-			if(this.getAttackState() == AttackState.STARTUP) {
+			if(this.getAttackState() == AttackState.STARTUP && (this.action != Action.STAND || this.action != Action.CROUCH || this.action != Action.FORWARD_WALK || this.action != Action.BACK_STEP || this.action != Action.RISE)) {
 				this.setAttackState(AttackState.RECOVERY);
 			}
 		}

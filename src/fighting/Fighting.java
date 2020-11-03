@@ -224,7 +224,7 @@ public class Fighting {
 					}
 				}
 				
-			} else if(attack != null && attack.getAttackType() != 0) {
+			} else if(attack != null && attack.getAttackType() != 0 && attack.getCurrentFrame() == (attack.getStartUp() + attack.getActive() - 1)) {
 				FeedbackAnalysis.getInstance().addSuccess(Success.WHIFF, i);
 			}
 		}

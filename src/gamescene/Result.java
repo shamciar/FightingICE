@@ -14,6 +14,7 @@ import python.PyManager;
 import setting.FlagSetting;
 import setting.GameSetting;
 import setting.LaunchSetting;
+import util.FeedbackAnalysis;
 import util.LogWriter;
 
 /**
@@ -81,7 +82,7 @@ public class Result extends GameScene {
 	public void update() {
 		if (FlagSetting.enableWindow) {
 			int[] positionX = new int[] { GameSetting.STAGE_WIDTH / 2 - 70, GameSetting.STAGE_WIDTH / 2 + 10 };
-
+			int count = 0;
 			for (int i = 0; i < this.roundResults.size(); i++) {
 				String[] score = new String[] { String.valueOf(this.roundResults.get(i).getRemainingHPs()[0]),
 						String.valueOf(this.roundResults.get(i).getRemainingHPs()[1]) };
@@ -94,9 +95,11 @@ public class Result extends GameScene {
 				switch (getWinPlayer(i)) {
 				case 1:
 					GraphicManager.getInstance().drawString("Win !", positionX[0] - 100, 50 + i * 100);
+					count ++;
 					break;
 				case -1:
 					GraphicManager.getInstance().drawString("Win !", positionX[1] + 80, 50 + i * 100);
+					count --;
 					break;
 				default:
 					GraphicManager.getInstance().drawString("Draw", positionX[0] - 100, 50 + i * 100);
@@ -104,6 +107,15 @@ public class Result extends GameScene {
 					break;
 				}
 			}
+			
+			//Output Feedback
+			if(count > 0) {
+				FeedbackAnalysis.getInstance().outputFeedback(1);
+			} else {
+				FeedbackAnalysis.getInstance().outputFeedback(-1);				
+			}
+			
+			//GraphicManager.getInstance().drawString(feedback, GameSetting.STAGE_WIDTH / 2 - feedback.length() * 5 - 30, 500);
 		}
 
 		endProcess();
